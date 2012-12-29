@@ -111,17 +111,54 @@ class Alarm extends EventEmitter
     @socket.write(cmd)
 
 
+  ###
+  Public: Arm the alarm in away mode.
+
+  code: The user code to use to arm the alarm.
+  callback: function invoked when interface acknowledegs command (optional)
+
+  Returns true if command is sent, otherwise false
+  ###
   armAway: (code, callback) ->
     @send "#{code}2", callback
 
+
+  ###
+  Public: Arm the alarm in away stay mode.
+
+  code: The user code to use to arm the alarm.
+  callback: function invoked when interface acknowledegs command (optional)
+
+  Returns true if command is sent, otherwise false
+  ###
   armStay: (code, callback) ->
     @send "#{code}3", callback
 
+
+  ###
+  Public: Disarm the alarm.
+
+  code: The user code to use to disarm the alarm.
+  callback: function invoked when interface acknowledegs command (optional)
+
+  Returns true if command is sent, otherwise false
+  ###
   disarm: (code, callback) ->
     @send "#{code}1", callback
 
+
+  ###
+  Public: Bypass a zone.
+
+  code: The user code to use to bypass
+  zone: The zone number to bypass
+  callback: function invoked when interface acknowledegs command (optional)
+
+  Returns true if command is sent, otherwise false
+  ###
   bypass: (code, zone, callback) ->
-    @send "#{code}5#{zone}", callback
+    @send "#{code}6#{zone}", callback
+
 
   ###
   Public: Connect to the AD2USB device using a TCP socket.

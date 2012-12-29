@@ -28,6 +28,12 @@ describe 'AD2USB', ->
       assert.equal socket.data, '12341'
       done()
 
+  it 'should bypass', (done) ->
+    socket.response = '!Sending.done'
+    alarm.bypass '1234', '12', ->
+      assert.equal socket.data, '1234612'
+      done()
+
   it 'should parse disarmed', (done) ->
     alarm.on 'disarmed', -> done()
     socket.emit 'data', '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "\n'
