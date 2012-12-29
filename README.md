@@ -3,7 +3,7 @@ A driver for the Nutech AD2USB Ademco Vista security panel interface.
 [![Build Status](https://secure.travis-ci.org/alexkwolfe/node-ad2usb.png)](http://travis-ci.org/alexkwolfe/node-ad2usb)
 
 The AD2USB interface is a serial device. This library assumes the serial communication has been made available
-on the network using an Serial-IP adapter.
+on the network using a Serial-IP adapter.
 
 
 ## Usage
