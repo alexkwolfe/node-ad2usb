@@ -1,6 +1,6 @@
 {
   "name": "ad2usb",
-  "description": "A driver for the Nutech AD2USB Ademco Vista security system panel interface",
+  "description": "A driver for the Nutech AD2USB Ademco Vista security panel interface",
   "author": "Alex Wolfe <alexkwolfe@gmail.com>",
   "version": "0.0.1",
   "main": "lib/node-ad2usb.js",

@@ -40,9 +40,19 @@ class Alarm extends EventEmitter
 
     # Section 1:  [1000000100000000----]
     sec1 = parts[0].replace(/[\[\]]/g, '').split('')
-    @state 'disarmed', sec1.shift() == '1'
-    @state 'armedAway', sec1.shift() == '1'
-    @state 'armedStay', sec1.shift() == '1'
+    disarmed = sec1.shift() == '1'
+    armedAway = sec1.shift() == '1'
+    armedStay = sec1.shift() == '1'
+    if disarmed and !@disarmed
+      @emit 'disarmed'
+    else if armedAway and !@armedAway
+      @emit 'armedAway'
+    else if armedStay and !@armedStay
+      @emit 'armedStay'
+    @disarmed = disarmed
+    @armedAway = armedAway
+    @armedStay = armedStay
+
     @state 'backlight', sec1.shift() == '1'
     @state 'programming', sec1.shift() == '1'
 
@@ -94,7 +104,7 @@ class Alarm extends EventEmitter
     changed =  @[name] != state
     if changed
       @[name] = state
-      @emit name, state
+      @emit name, state  if state
     changed
     
       
