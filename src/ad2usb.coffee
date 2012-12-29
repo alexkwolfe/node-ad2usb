@@ -99,12 +99,14 @@ class Alarm extends EventEmitter
 
     
   ###
+  Internal: Keep track of the state of the named property. If the property changes, then emit
+  an event with the new state.
   ###
   state: (name, state) ->
     changed =  @[name] != state
     if changed
       @[name] = state
-      @emit name, state  if state
+      @emit name, state
     changed
     
       
