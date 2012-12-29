@@ -1,0 +1,30 @@
+{
+  "name": "ad2usb",
+  "description": "A driver for the Nutech AD2USB Ademco Vista security system panel interface",
+  "author": "Alex Wolfe <alexkwolfe@gmail.com>",
+  "version": "0.0.1",
+  "main": "lib/node-ad2usb.js",
+  "licenses": [{
+    "type": "MIT",
+    "url": "http://opensource.org/licenses/mit-license.php"
+  }],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexkwolfe/node-ad2usb.git"
+  },
+  "engines": {
+    "node": ">=0.8.1"
+  },
+  "scripts": {
+    "test": "cake test",
+    "prepublish": "cake build"
+  },
+  "dependencies": {
+    "bufferstream": ">= 0.0.0"
+  },
+  "devDependencies": {
+    "coffee-script": ">= 1.4.0",
+    "mocha": ">= 1.7.x",
+    "chai": ">= 1.4.x"
+  }
+}
