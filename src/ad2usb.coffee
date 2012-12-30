@@ -2,6 +2,12 @@ BufferStream = require('bufferstream')
 EventEmitter = require('events').EventEmitter
 Socket = require('net').Socket
 
+pad = (num, len = 3) ->
+  num = num.toString()
+  while (num.length < len)
+    num = "0#{num}"
+  num
+
 
 class Alarm extends EventEmitter
   constructor: (@socket) ->
@@ -72,7 +78,8 @@ class Alarm extends EventEmitter
 
     # Section 2: 008
     sec2 = parts[1]
-    @faultedZone = sec2 # What should be done with this?
+    @faultedZone = sec2
+    # What should be done with this?
 
     # Section 3: [f702000b1008001c08020000000000]
     sec3 = parts[3].replace(/[\[\]]/g, '')
@@ -85,19 +92,22 @@ class Alarm extends EventEmitter
   handleRfMessage: (msg) ->
     parts = msg.replace('!RFX:', '').split(',')
     serial = parts.shift()
-    status = parseInt(parts.shift(), 16).toString(2).split('')
+    status = pad(parseInt(parts.shift(), 16).toString(2), 8).split('').reverse()
     status =
-      battery: status[1] == '1'
-      supervision: status[2] == '1'
-      loop1: status[7] == '1'
-      loop2: status[5] == '1'
-      loop3: status[4] == '1'
-      loop4: status[6] == '1'
-    state "zone:#{serial}", status.supervision
-    state "battery:#{serial}", status.battery
-    state "loop:#{serial}", [status.loop1, status.loop2, status.loop3, status.loop4]
+      battery: status[1] == '0'
+      supervision: status[2] == '0'
+      loop1: status[7] == '0'
+      loop2: status[5] == '0'
+      loop3: status[4] == '0'
+      loop4: status[6] == '0'
+    @state "supervision:#{serial}", status.supervision
+    @state "battery:#{serial}", status.battery
+    @state "loop:#{serial}:1", status.loop1
+    @state "loop:#{serial}:2", status.loop2
+    @state "loop:#{serial}:3", status.loop3,
+    @state "loop:#{serial}:4", status.loop4
 
-    
+
   ###
   Internal: Keep track of the state of the named property. If the property changes, then emit
   an event with the new state.
@@ -108,8 +118,8 @@ class Alarm extends EventEmitter
       @[name] = state
       @emit name, state
     changed
-    
-      
+
+
   ###
   Internal: Send a command to the AD2USB interface.
 
@@ -132,7 +142,7 @@ class Alarm extends EventEmitter
   Returns true if command is sent, otherwise false
   ###
   armAway: (code, callback) ->
-    @send "#{code}2", callback
+    @send "#{code}2", callback if code
 
 
   ###
@@ -144,7 +154,7 @@ class Alarm extends EventEmitter
   Returns true if command is sent, otherwise false
   ###
   armStay: (code, callback) ->
-    @send "#{code}3", callback
+    @send "#{code}3", callback if code
 
 
   ###
@@ -156,7 +166,7 @@ class Alarm extends EventEmitter
   Returns true if command is sent, otherwise false
   ###
   disarm: (code, callback) ->
-    @send "#{code}1", callback
+    @send "#{code}1", callback if code
 
 
   ###
@@ -169,7 +179,7 @@ class Alarm extends EventEmitter
   Returns true if command is sent, otherwise false
   ###
   bypass: (code, zone, callback) ->
-    @send "#{code}6#{zone}", callback
+    @send "#{code}6#{zone}", callback if code
 
 
   ###
@@ -182,7 +192,7 @@ class Alarm extends EventEmitter
   @connect: (args...) ->
     callback = args.pop() if typeof args[args.length - 1] == 'function'
     ip = args.shift()
-    port = args.shift() ? 10001
+    port = args.shift() ? 4999
 
     socket = new Socket(type: 'tcp4')
     alarm = new Alarm(socket)

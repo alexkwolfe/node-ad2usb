@@ -81,3 +81,39 @@ describe 'AD2USB', ->
 
     assert.equal 1, disarmedCount
     assert.equal 1, armedCount
+
+  it 'should emit rf battery fault', (done) ->
+    alarm.on 'battery:0102532', (ok) ->
+      assert.ok !ok
+      done()
+    socket.emit 'data', '!RFX:0102532,02\n'
+
+  it 'should emit rf supervision fault', (done) ->
+    alarm.on 'supervision:0102532', (ok) ->
+      assert.ok !ok
+      done()
+    socket.emit 'data', '!RFX:0102532,04\n'
+
+  it 'should emit rf loop 1 fault', (done) ->
+    alarm.on 'loop:0102532:1', (ok) ->
+      assert.ok !ok
+      done()
+    socket.emit 'data', '!RFX:0102532,80\n'
+
+  it 'should emit rf loop 2 fault', (done) ->
+    alarm.on 'loop:0102532:2', (ok) ->
+      assert.ok !ok
+      done()
+    socket.emit 'data', '!RFX:0102532,20\n'
+
+  it 'should emit rf loop 3 fault', (done) ->
+    alarm.on 'loop:0102532:3', (ok) ->
+      assert.ok !ok
+      done()
+    socket.emit 'data', '!RFX:0102532,10\n'
+
+  it 'should emit rf loop 4 fault', (done) ->
+    alarm.on 'loop:0102532:4', (ok) ->
+      assert.ok !ok
+      done()
+    socket.emit 'data', '!RFX:0102532,40\n'
