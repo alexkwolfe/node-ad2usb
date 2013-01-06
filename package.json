@@ -3,7 +3,7 @@
   "description": "A driver for the Nutech AD2USB Ademco Vista security panel interface",
   "author": "Alex Wolfe <alexkwolfe@gmail.com>",
   "version": "0.0.1",
-  "main": "lib/node-ad2usb.js",
+  "main": "lib/ad2usb.js",
   "licenses": [{
     "type": "MIT",
     "url": "http://opensource.org/licenses/mit-license.php"

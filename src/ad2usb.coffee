@@ -63,7 +63,7 @@ class Alarm extends EventEmitter
     @state 'programming', sec1.shift() == '1'
 
     beeps = parseInt(sec1.shift(), 10)
-    @emit 'beeps', beeps if beeps > 0
+    @emit 'beep', beeps if beeps > 0
 
     @state 'bypass', sec1.shift() == '1'
     @state 'power', sec1.shift() == '1'
@@ -132,6 +132,13 @@ class Alarm extends EventEmitter
     @once 'sent', (msg) -> callback(null, msg) if callback
     @socket.write(cmd)
 
+  ###
+  Public: Check armed status
+
+  Returns true if alarm is armed in stay or away mode, otherwise false
+  ###
+  isArmed: ->
+    @armedStay or @armedAway
 
   ###
   Public: Arm the alarm in away mode.
