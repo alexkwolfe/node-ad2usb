@@ -35,52 +35,74 @@ describe 'AD2USB', ->
       done()
 
   it 'should emit disarmed', (done) ->
-    alarm.on 'disarmed', -> done()
+    alarm.on 'disarmed', done
     socket.emit 'data', '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "\n'
 
   it 'should emit armed stay', (done) ->
-    alarm.on 'armedStay', -> done()
+    alarm.on 'armedStay', done
     socket.emit 'data', '[0010000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***STAY***                "\n'
 
   it 'should emit armed away', (done) ->
-    alarm.on 'armedAway', -> done()
+    alarm.on 'armedAway', done
     socket.emit 'data', '[0100000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***AWAY***                "\n'
 
-  it 'should not repeatedly emit disarmed', ->
+  it 'should not repeatedly emit disarmed', (done)->
     count = 0
     alarm.on 'disarmed', ->
       count += 1
     socket.emit 'data', '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "\n'
     socket.emit 'data', '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "\n'
-    assert.equal(1, count)
+    assertion = ->
+      assert.equal(1, count)
+      done()
+    setTimeout assertion, 10
 
-  it 'should not repeatedly emit armed stay', ->
+  it 'should not repeatedly emit armed stay', (done)->
     count = 0
     alarm.on 'armedStay', ->
       count += 1
     socket.emit 'data', '[0010000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***STAY***                "\n'
     socket.emit 'data', '[0010000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***STAY***                "\n'
-    assert.equal(1, count)
+    assertion = ->
+      assert.equal(1, count)
+      done()
+    setTimeout assertion, 10
 
-  it 'should not repeatedly emit armed away', ->
+  it 'should not repeatedly emit armed away', (done) ->
     count = 0
     alarm.on 'armedAway', ->
       count += 1
     socket.emit 'data', '[0100000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***AWAY***                "\n'
     socket.emit 'data', '[0100000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***AWAY***                "\n'
-    assert.equal(1, count)
+    assertion = ->
+      assert.equal(1, count)
+      done()
+    setTimeout assertion, 10
 
-  it 'should emit once when alarm status changes', ->
+  it 'should emit once when alarm status changes', (done) ->
     disarmedCount = 0
     armedCount = 0
     alarm.on 'disarmed', -> disarmedCount += 1
     alarm.on 'armedAway', -> armedCount += 1
-
     socket.emit 'data', '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "\n'
     socket.emit 'data', '[0100000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***AWAY***                "\n'
+    assertion = ->
+      assert.equal 1, disarmedCount
+      assert.equal 1, armedCount
+      done()
+    setTimeout assertion, 10
 
-    assert.equal 1, disarmedCount
-    assert.equal 1, armedCount
+  it 'should not reset alarm status', (done) ->
+    count = 0
+    alarm.on 'disarmed', ->
+      count += 1
+    socket.emit 'data', '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "\n'
+    socket.emit 'data', '[0000000100000000----],008,[f702000b1008000c08020000000000],"****DISARMED****Hit * for faults"\n'
+    socket.emit 'data', '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "\n'
+    assertion = ->
+      assert.equal(1, count)
+      done()
+    setTimeout assertion, 10
 
   it 'should emit rf battery fault', (done) ->
     alarm.on 'battery:0102532', (ok) ->
