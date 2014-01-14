@@ -139,3 +139,8 @@ describe 'AD2USB', ->
       assert.ok !ok
       done()
     socket.emit 'data', '!RFX:0102532,40\n'
+
+  it 'should not crash on parse error', (done) ->
+    alarm.on 'error', ->
+      done()
+    socket.emit 'data', '[1000000100000000----],008,[f702\n'

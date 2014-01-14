@@ -30,12 +30,15 @@ class Alarm extends EventEmitter
   rfMessageRegex = /^!RFX/
   sendingRegex = /^!Sending(\.*)done/
   handleMessage: (msg) ->
-    if msg.match(panelMessageRegex)
-      @handlePanelData msg
-    else if msg.match(rfMessageRegex)
-      @handleRfMessage msg
-    else if msg.match(sendingRegex)
-      @emit 'sent'
+    try
+      if msg.match(panelMessageRegex)
+        @handlePanelData msg
+      else if msg.match(rfMessageRegex)
+        @handleRfMessage msg
+      else if msg.match(sendingRegex)
+        @emit 'sent'
+    catch err
+      @emit 'error', err
 
 
   ###
