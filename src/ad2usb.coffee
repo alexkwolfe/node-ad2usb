@@ -89,6 +89,8 @@ class Alarm extends EventEmitter
     # Section 3: [f702000b1008001c08020000000000]
     sec3 = parts[3].replace(/[\[\]]/g, '')
     @raw = sec3 # What should be done with this?
+    
+    @emit 'raw', sec1, sec2, sec3 # raw emit for debugging or additnl handling
 
 
   ###
