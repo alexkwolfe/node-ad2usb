@@ -1,5 +1,5 @@
 assert = require('chai').assert
-Alarm = require('../ad2usb')
+Alarm = require('../src/ad2usb')
 Socket = require('./socket')
 
 describe 'Callback', ->
