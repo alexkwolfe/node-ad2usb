@@ -5,7 +5,7 @@ task 'build', ->
   run './node_modules/coffee-script/bin/coffee -o lib -c src'
 
 task 'test', ->
-  run './node_modules/.bin/mocha src/spec/* --compilers coffee:coffee-script --reporter spec --colors'
+  run './node_modules/.bin/mocha src/spec/* --compilers coffee:coffee-script/register --reporter spec --colors'
 
 task 'clean', ->
   run 'rm -fr ./lib'

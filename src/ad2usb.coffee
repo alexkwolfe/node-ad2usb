@@ -1,4 +1,4 @@
-BufferStream = require('bufferstream')
+split = require('split')
 EventEmitter = require('events').EventEmitter
 Socket = require('net').Socket
 
@@ -11,16 +11,9 @@ pad = (num, len = 3) ->
 
 class Alarm extends EventEmitter
   constructor: (@socket) ->
-    @buffer = new BufferStream(encoding: 'utf8', size: 'flexible')
-    @buffer.split '\n', (message) =>
-      @handleMessage(message.toString('ascii'))
-    @socket.on('data', @handleData)
+    @socket.pipe(split()).on 'data', (line) =>
+      @handleMessage(line.toString('ascii'))
 
-  ###
-  Internal: Handle a chunk of data sent by the AD2SUB interface by writing it to the buffer.
-  ###
-  handleData: (data) =>
-    @buffer.write(data.toString('ascii'))
 
   ###
   Internal: A message has been received and must be handled.

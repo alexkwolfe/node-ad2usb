@@ -1,11 +1,27 @@
 EventEmitter = require('events').EventEmitter
+Duplex = require('stream').Duplex
 
-class Socket extends EventEmitter
+class Socket extends Duplex
   constructor: ->
-    @response = null
+    @data = []
+    @written = null
+    super
 
-  write: (data) ->
-    @data = data
-    @emit('data', "#{@response}\n") if @response
+  write: (msg) ->
+    @written = msg
+    @emit('readable') if @data.length
+
+  read: ->
+    try
+      if @data.length
+        "#{@data.join('\n')}\n"
+      else
+        null
+    finally
+      @data = []
+
+  send: (data) ->
+    @data.push data
+    @emit('readable')
 
 module.exports = Socket

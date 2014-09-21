@@ -11,6 +11,6 @@ describe 'Callback', ->
     alarm = new Alarm(socket)
 
   it 'should callback on sent response', (done) ->
-    socket.response = '!Sending..done'
+    socket.data.push '!Sending..done'
     alarm.send '12341', -> done()
 
