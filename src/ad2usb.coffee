@@ -82,7 +82,7 @@ class Alarm extends EventEmitter
     # Section 2: 008
     sec2 = parts[1]
     sections.push sec2
-    @faultedZone = sec2
+    @state 'fault', sec2
     # What should be done with this?
 
     # Section 3: [f702000b1008001c08020000000000]

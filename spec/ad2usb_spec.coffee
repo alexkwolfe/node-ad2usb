@@ -55,6 +55,12 @@ describe 'AD2USB', ->
     alarm.on 'armedAway', done
     socket.send '[0100000100000000----],008,[f702000b1008008c08020000000000],"ARMED ***AWAY***                "'
 
+  it 'should emit fault', (done) ->
+    alarm.on 'fault', (zone) ->
+      assert.equal zone, "008"
+      done()
+    socket.send '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "'
+
   it 'should not repeatedly emit disarmed', (done)->
     count = 0
     alarm.on 'disarmed', ->
