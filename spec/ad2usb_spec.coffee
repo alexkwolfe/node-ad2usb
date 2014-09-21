@@ -34,6 +34,15 @@ describe 'AD2USB', ->
       assert.equal socket.written, '1234612'
       done()
 
+  it 'should emit raw', (done) ->
+    alarm.on 'raw', (sec1, sec2, sec3, sec4) ->
+      assert.equal sec1, '1000000100000000----'
+      assert.equal sec2, '008'
+      assert.equal sec3, 'f702000b1008001c08020000000000'
+      assert.equal sec4, '"****DISARMED****  Ready to Arm  "'
+      done()
+    socket.send '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "'
+
   it 'should emit disarmed', (done) ->
     alarm.on 'disarmed', done
     socket.send '[1000000100000000----],008,[f702000b1008001c08020000000000],"****DISARMED****  Ready to Arm  "'
@@ -143,4 +152,4 @@ describe 'AD2USB', ->
   it 'should not crash on parse error', (done) ->
     alarm.on 'error', ->
       done()
-    socket.send '[1000000100000000----],008,[f702\n'
+    socket.send '[1000000100000000----],008'

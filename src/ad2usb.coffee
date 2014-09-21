@@ -40,9 +40,14 @@ class Alarm extends EventEmitter
   handlePanelData: (msg) ->
     parts = msg.split(',')
 
+    # Keep record of each section of the message
+    sections = []
+
     # Section 1:  [1000000100000000----]
 
-    sec1 = parts[0].replace(/[\[\]]/g, '').split('')
+    sec = parts[0].replace(/[\[\]]/g, '')
+    sections.push sec
+    sec1 = sec.split('')
     disarmed = sec1.shift() == '1'
     armedAway = sec1.shift() == '1'
     armedStay = sec1.shift() == '1'
@@ -76,14 +81,17 @@ class Alarm extends EventEmitter
 
     # Section 2: 008
     sec2 = parts[1]
+    sections.push sec2
     @faultedZone = sec2
     # What should be done with this?
 
     # Section 3: [f702000b1008001c08020000000000]
-    sec3 = parts[3].replace(/[\[\]]/g, '')
-    @raw = sec3 # What should be done with this?
-    
-    @emit 'raw', sec1, sec2, sec3 # raw emit for debugging or additnl handling
+    sections.push parts[2].replace(/[\[\]]/g, '')
+
+    # Section 4: "****DISARMED****  Ready to Arm  "
+    sections.push parts[3]
+
+    @emit.apply @, ['raw'].concat(sections) # raw emit for debugging or additional handling
 
 
   ###
