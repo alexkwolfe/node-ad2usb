@@ -11,9 +11,11 @@ pad = (num, len = 3) ->
 
 class Alarm extends EventEmitter
   constructor: (@socket) ->
+    @setup()
+
+  setup: =>
     @socket.pipe(split()).on 'data', (line) =>
       @handleMessage(line.toString('ascii'))
-
 
   ###
   Internal: A message has been received and must be handled.
