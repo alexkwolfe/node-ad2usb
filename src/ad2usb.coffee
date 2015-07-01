@@ -91,6 +91,7 @@ class Alarm extends EventEmitter
     sections.push parts[2].replace(/[\[\]]/g, '')
 
     # Section 4: "****DISARMED****  Ready to Arm  "
+    @emit 'lcdtext', parts[3]
     sections.push parts[3]
 
     @emit.apply @, ['raw'].concat(sections) # raw emit for debugging or additional handling
@@ -172,6 +173,18 @@ class Alarm extends EventEmitter
   ###
   armStay: (code, callback) ->
     @send "#{code}3", callback if code
+
+
+  ###
+  Public: Arm the alarm in night stay mode.
+
+  code: The user code to use to arm the alarm.
+  callback: function invoked when interface acknowledegs command (optional)
+
+  Returns true if command is sent, otherwise false
+  ###
+  armNight: (code, callback) ->
+    @send "#{code}33", callback if code
 
 
   ###
