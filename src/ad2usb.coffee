@@ -53,16 +53,7 @@ class Alarm extends EventEmitter
     disarmed = sec1.shift() == '1'
     armedAway = sec1.shift() == '1'
     armedStay = sec1.shift() == '1'
-    if disarmed or armedAway or armedStay
-      if disarmed and !@disarmed
-        @emit 'disarmed'
-      else if armedAway and !@armedAway
-        @emit 'armedAway'
-      else if armedStay and !@armedStay
-        @emit 'armedStay'
-      @disarmed = disarmed
-      @armedAway = armedAway
-      @armedStay = armedStay
+    
 
     @state 'backlight', sec1.shift() == '1'
     @state 'programming', sec1.shift() == '1'
@@ -91,8 +82,29 @@ class Alarm extends EventEmitter
     sections.push parts[2].replace(/[\[\]]/g, '')
 
     # Section 4: "****DISARMED****  Ready to Arm  "
-    @emit 'lcdtext', parts[3]
+    lcdtext = parts[3].replace(/"/g,"")
+    if lcdtext != @lcdtext
+      @emit 'lcdtext', lcdtext
+      @lcdtext = lcdtext
     sections.push parts[3]
+
+    # Process arm state events, which also need LCD text
+    armedNight = armedStay and lcdtext.indexOf("***NIGHT-STAY***") > -1
+    if armedNight and armedStay
+      armedStay = false
+    if disarmed or armedAway or armedStay or armedNight
+      if disarmed and !@disarmed
+        @emit 'disarmed'
+      else if armedAway and !@armedAway
+        @emit 'armedAway'
+      else if armedStay and !@armedStay
+        @emit 'armedStay'
+      else if armedNight and !@armedNight
+        @emit 'armedNight'
+      @disarmed = disarmed
+      @armedAway = armedAway
+      @armedStay = armedStay
+      @armedNight = armedNight
 
     @emit.apply @, ['raw'].concat(sections) # raw emit for debugging or additional handling
 
