@@ -114,7 +114,7 @@ class Alarm extends EventEmitter
     @state "battery:#{serial}", status.battery
     @state "loop:#{serial}:1", status.loop1
     @state "loop:#{serial}:2", status.loop2
-    @state "loop:#{serial}:3", status.loop3,
+    @state "loop:#{serial}:3", status.loop3
     @state "loop:#{serial}:4", status.loop4
 
 
